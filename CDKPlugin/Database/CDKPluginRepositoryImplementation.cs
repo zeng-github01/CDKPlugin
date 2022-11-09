@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CDKPlugin.API.Class;
 using CDKPlugin.API.Interface;
@@ -17,41 +18,46 @@ namespace CDKPlugin.Database
         {
             m_DbContext = managerDbContext;
         }
-        public IQueryable<CDKData> GetCdkData(string ckey)
+        private IQueryable<CDKData> GetCdkDataInternal(string ckey)
         {
             // throw new NotImplementedException();
             return m_DbContext.CdkData.Where(x => x.CKey == ckey);
         }
 
-        public IQueryable<LogData> GetLogData(string parameter, DbQueryType type)
+        private IQueryable<LogData> GetLogDataInternal(string parameter, DbQueryType type)
         {
             // throw new System.NotImplementedException();
             switch (type)
             {
                 case DbQueryType.ByCDK:
                     return m_DbContext.LogData.Where(x => x.CKey == parameter);
-                break;
                 case DbQueryType.BySteamID:
                     if (ulong.TryParse(parameter, out ulong steamid))
                     {
                         return m_DbContext.LogData.Where(x => x.SteamID == steamid);
                     }
-                    
-                    break;
+                    return m_DbContext.LogData.Take(0);
+                case DbQueryType.ByTime:
+                    return m_DbContext.LogData.Where(x=> x)
 
             }
         }
+
+       
 
         public CDKRedeemedResult Redeemed(UnturnedPlayer player, string Key)
         {
             throw new System.NotImplementedException();
         }
 
-        // private CDKData buildCdkData(MySqlDataReader reader)
-        // {
-        //     return new CDKData();
-        // }
-        //
-        // private LogData Build
+        public List<LogData> GetData(string parameter, DbQueryType type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<CDKData> GetCDKData(string CKey)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
