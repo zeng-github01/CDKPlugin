@@ -4,9 +4,7 @@ using System.Linq;
 using CDKPlugin.API.Class;
 using CDKPlugin.API.Interface;
 using MyOpenModPlugin.API.Enum;
-using MySql.Data.MySqlClient;
 using OpenMod.Unturned.Players;
-using Steamworks;
 
 namespace CDKPlugin.Database
 {
@@ -37,13 +35,13 @@ namespace CDKPlugin.Database
                         return m_DbContext.LogData.Where(x => x.SteamID == steamid);
                     }
                     return m_DbContext.LogData.Take(0);
-                case DbQueryType.ByTime:
-                    return m_DbContext.LogData.Where(x=> x)
+                default:
+                    return m_DbContext.LogData;
 
             }
         }
 
-       
+
 
         public CDKRedeemedResult Redeemed(UnturnedPlayer player, string Key)
         {
