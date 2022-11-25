@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CDKPlugin.API.Class;
 using CDKPlugin.API.Interface;
+using CDKPlugin.Entities;
 using MyOpenModPlugin.API.Enum;
 using OpenMod.Unturned.Players;
 
@@ -22,24 +22,6 @@ namespace CDKPlugin.Database
             return m_DbContext.CdkData.Where(x => x.CKey == ckey);
         }
 
-        private IQueryable<LogData> GetLogDataInternal(string parameter, DbQueryType type)
-        {
-            // throw new System.NotImplementedException();
-            switch (type)
-            {
-                case DbQueryType.ByCDK:
-                    return m_DbContext.LogData.Where(x => x.CKey == parameter);
-                case DbQueryType.BySteamID:
-                    if (ulong.TryParse(parameter, out ulong steamid))
-                    {
-                        return m_DbContext.LogData.Where(x => x.SteamID == steamid);
-                    }
-                    return m_DbContext.LogData.Take(0);
-                default:
-                    return m_DbContext.LogData;
-
-            }
-        }
 
 
 

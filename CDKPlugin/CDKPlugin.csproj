@@ -44,6 +44,10 @@
         <EmbeddedResource Include="translations.yaml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="API\Class\" />
+    </ItemGroup>
+
     <Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
         <ItemGroup>
         </ItemGroup>

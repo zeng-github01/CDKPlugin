@@ -1,21 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
-namespace CDKPlugin.API.Class
+namespace CDKPlugin.Entities
 {
     public class LogData
     {
-        //private DateTime Now = DateTime.Now;
         [Required]
-        public string CKey { get; set; } = String.Empty;
+        public string? CKey { get; set; }
 
         [Required]
         public ulong SteamID { get; set; }
 
         [Required]
-        //[DefaultValue()]
         public DateTime RedeemedTime { get; set; }
 
 

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using CDKPlugin.API.Class;
+using CDKPlugin.Entities;
 using MyOpenModPlugin.API.Enum;
-using MySql.Data.MySqlClient;
 using OpenMod.Unturned.Players;
 
 namespace CDKPlugin.API.Interface
@@ -17,7 +15,7 @@ namespace CDKPlugin.API.Interface
 
         public List<CDKData> GetCDKData(string CKey);
 
-        public CDKRedeemedResult Redeemed(UnturnedPlayer player,string Key);
+        public CDKRedeemedResult Redeemed(UnturnedPlayer player, string Key);
 
     }
 }

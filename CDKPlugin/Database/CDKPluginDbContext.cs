@@ -1,6 +1,6 @@
 ﻿using System;
+using CDKPlugin.Entities;
 using Microsoft.EntityFrameworkCore;
-using CDKPlugin.API.Class;
 using OpenMod.EntityFrameworkCore;
 using OpenMod.EntityFrameworkCore.Configurator;
 
@@ -26,7 +26,7 @@ namespace CDKPlugin.Database
             modelBuilder.Entity<CDKData>().HasKey(x => x.CKey);
 
             //需要解释
-            modelBuilder.Entity<LogData>().HasIndex(x => new {x.CKey, x.SteamID}).IsUnique();
+            modelBuilder.Entity<LogData>().HasIndex(x => new { x.CKey, x.SteamID }).IsUnique();
         }
     }
 }
