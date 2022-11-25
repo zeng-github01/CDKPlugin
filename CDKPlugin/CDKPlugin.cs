@@ -1,5 +1,7 @@
 ﻿using System;
+using CDKPlugin.Contexts;
 using Cysharp.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
@@ -15,18 +17,19 @@ namespace CDKPlugin
     {
         private readonly IStringLocalizer stringLocalizer;
         private readonly ILogger<MyOpenModPlugin> logger;
+        private readonly CDKPluginDbContext dbContext;
 
-        public MyOpenModPlugin(
-            IStringLocalizer stringLocalizer,
-            ILogger<MyOpenModPlugin> logger,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+        public MyOpenModPlugin(IStringLocalizer stringLocalizer, ILogger<MyOpenModPlugin> logger, IServiceProvider serviceProvider, CDKPluginDbContext dbContext) : base(serviceProvider)
         {
             this.stringLocalizer = stringLocalizer;
             this.logger = logger;
+            this.dbContext = dbContext;
         }
 
         protected override async UniTask OnLoadAsync()
         {
+            await dbContext.Database.MigrateAsync();
+            logger.LogWarning("database migration succeed!");
             await UniTask.SwitchToMainThread(); //uncomment if you have to access Unturned or UnityEngine APIs
             logger.LogInformation(stringLocalizer["plugin_events:plugin_start"]);
 
