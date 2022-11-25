@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OpenMod.EntityFrameworkCore;
 using OpenMod.EntityFrameworkCore.Configurator;
 
-namespace CDKPlugin.Database
+namespace CDKPlugin.Contexts
 {
     public class CDKPluginDbContext : OpenModDbContext<CDKPluginDbContext>
     {
@@ -26,6 +26,8 @@ namespace CDKPlugin.Database
             modelBuilder.Entity<CDKData>().HasKey(x => x.CKey);
 
             //需要解释
+            modelBuilder.Entity<LogData>().HasKey(i => i.CKey);
+            modelBuilder.Entity<LogData>().Property(i => i.RedeemedTime).IsRequired();
             modelBuilder.Entity<LogData>().HasIndex(x => new { x.CKey, x.SteamID }).IsUnique();
         }
     }

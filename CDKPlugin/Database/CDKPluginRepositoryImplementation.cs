@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CDKPlugin.API.Interface;
+using CDKPlugin.Contexts;
 using CDKPlugin.Entities;
 using MyOpenModPlugin.API.Enum;
 using OpenMod.Unturned.Players;
@@ -16,18 +16,10 @@ namespace CDKPlugin.Database
         {
             m_DbContext = managerDbContext;
         }
-        private IQueryable<CDKData> GetCdkDataInternal(string ckey)
+
+        public List<CDKData> GetCDKData(Guid CKey)
         {
-            // throw new NotImplementedException();
-            return m_DbContext.CdkData.Where(x => x.CKey == ckey);
-        }
-
-
-
-
-        public CDKRedeemedResult Redeemed(UnturnedPlayer player, string Key)
-        {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public List<LogData> GetData(string parameter, DbQueryType type)
@@ -35,7 +27,7 @@ namespace CDKPlugin.Database
             throw new NotImplementedException();
         }
 
-        public List<CDKData> GetCDKData(string CKey)
+        public CDKRedeemedResult Redeemed(UnturnedPlayer player, Guid Key)
         {
             throw new NotImplementedException();
         }

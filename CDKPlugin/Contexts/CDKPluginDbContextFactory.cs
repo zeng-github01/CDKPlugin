@@ -1,6 +1,6 @@
 ﻿using OpenMod.EntityFrameworkCore.MySql;
 
-namespace CDKPlugin.Database
+namespace CDKPlugin.Contexts
 {
     public class CDKPluginDbContextFactory : OpenModMySqlDbContextFactory<CDKPluginDbContext>
     {
