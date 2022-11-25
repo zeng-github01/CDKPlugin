@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using CDKPlugin.API.Interface;
 using CDKPlugin.Contexts;
 using CDKPlugin.Entities;
-using MyOpenModPlugin.API.Enum;
+using CDKPlugin.Infrastructure.Enum;
 using OpenMod.Unturned.Players;
 
-namespace CDKPlugin.Database
+namespace CDKPlugin.Repositories
 {
-    public class CDKPluginRepositoryImplementation : ICDKPluginRepository
+    public class CDKPluginRepository : ICDKPluginRepository
     {
         private readonly CDKPluginDbContext m_DbContext;
 
-        public CDKPluginRepositoryImplementation(CDKPluginDbContext managerDbContext)
+        public CDKPluginRepository(CDKPluginDbContext managerDbContext)
         {
             m_DbContext = managerDbContext;
         }

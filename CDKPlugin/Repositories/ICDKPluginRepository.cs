@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using CDKPlugin.Entities;
-using MyOpenModPlugin.API.Enum;
+using CDKPlugin.Infrastructure.Enum;
 using OpenMod.Unturned.Players;
 
-namespace CDKPlugin.API.Interface
+namespace CDKPlugin.Repositories
 {
     public interface ICDKPluginRepository
     {

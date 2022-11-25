@@ -1,4 +1,4 @@
-﻿namespace MyOpenModPlugin.API.Enum
+﻿namespace CDKPlugin.Infrastructure.Enum
 {
     public enum DbQueryType
     {
