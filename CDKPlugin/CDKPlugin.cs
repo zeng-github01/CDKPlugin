@@ -1,6 +1,5 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
@@ -14,17 +13,14 @@ namespace CDKPlugin
 {
     public class MyOpenModPlugin : OpenModUnturnedPlugin
     {
-        private readonly IConfiguration configuration;
         private readonly IStringLocalizer stringLocalizer;
         private readonly ILogger<MyOpenModPlugin> logger;
 
         public MyOpenModPlugin(
-            IConfiguration configuration,
             IStringLocalizer stringLocalizer,
             ILogger<MyOpenModPlugin> logger,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            this.configuration = configuration;
             this.stringLocalizer = stringLocalizer;
             this.logger = logger;
         }
