@@ -11,7 +11,7 @@ namespace CDKPlugin.Migrations
                 name: "Zengyj_CDKPlugin_CdkData",
                 columns: table => new
                 {
-                    CKey = table.Column<Guid>(nullable: false)
+                    CKey = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

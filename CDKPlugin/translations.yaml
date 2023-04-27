@@ -5,5 +5,7 @@ plugin_events:
   plugin_start: "Hello World"
   plugin_stop: "Good bye :("
 redeem_cdk:
-  success: ""
-  failure: ""
+  Success: ""
+  #Failure: ""
+  KeyNotFound: "该密钥不存在"
+  Redeemed : "该密钥已被兑换"

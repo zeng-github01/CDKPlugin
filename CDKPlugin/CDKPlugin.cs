@@ -13,13 +13,13 @@ using OpenMod.Unturned.Plugins;
 
 namespace CDKPlugin
 {
-    public class MyOpenModPlugin : OpenModUnturnedPlugin
+    public class CDKPlugin : OpenModUnturnedPlugin
     {
         private readonly IStringLocalizer stringLocalizer;
-        private readonly ILogger<MyOpenModPlugin> logger;
+        private readonly ILogger<CDKPlugin> logger;
         private readonly CDKPluginDbContext dbContext;
 
-        public MyOpenModPlugin(IStringLocalizer stringLocalizer, ILogger<MyOpenModPlugin> logger, IServiceProvider serviceProvider, CDKPluginDbContext dbContext) : base(serviceProvider)
+        public CDKPlugin(IStringLocalizer stringLocalizer, ILogger<CDKPlugin> logger, IServiceProvider serviceProvider, CDKPluginDbContext dbContext) : base(serviceProvider)
         {
             this.stringLocalizer = stringLocalizer;
             this.logger = logger;

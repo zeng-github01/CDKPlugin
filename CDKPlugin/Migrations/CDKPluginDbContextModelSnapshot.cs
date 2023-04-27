@@ -19,7 +19,7 @@ namespace CDKPlugin.Migrations
 
             modelBuilder.Entity("CDKPlugin.Entities.CDKData", b =>
                 {
-                    b.Property<Guid>("CKey")
+                    b.Property<string>("CKey")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 

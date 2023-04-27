@@ -8,11 +8,21 @@ namespace CDKPlugin.Repositories
 {
     public interface ICDKPluginRepository
     {
-        public List<LogData> GetData(string parameter, DbQueryType type);
+        public List<LogData> GetLogData(string parameter, DbQueryType type);
 
-        public List<CDKData> GetCDKData(Guid CKey);
+        public CDKData GetCDKData(string Ckey);
 
-        public CDKRedeemedResult Redeemed(UnturnedPlayer player, Guid Key);
+        public void InsertLog(LogData logData);
+
+        public void UpdateLog(LogData logData);
+
+        public void DeleteLog(List<LogData> logs);
+
+        public void InsertCDK(CDKData cdkData);
+
+        public void UpdateCDK(CDKData cdkData);
+
+        public void DeleteCDK(List<CDKData> cDKs); 
 
     }
 }
