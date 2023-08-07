@@ -42,32 +42,35 @@ namespace CDKPlugin.Command
             if(Context.Actor is UnturnedUser player)
             {
                 var uplayer = Context.Actor as UnturnedUser;
-                if (CDKey != null && LogList.Count <= 0)
+                if (CDKey != null)
                 {
+                    if (LogList.Count > 0)
+                    {
+                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:Redeemed"], System.Drawing.Color.Red);
+                        return;
+                    }
+
+
                     CDKey.Items.ForEach(item =>
                     {
                         item.GiveItem(player.Player);
                     });
-
+                    
                     VehicleTool.giveVehicle(player.Player.Player, CDKey.Vehicle);
 
                     player.Player.Player.skills.askAward(CDKey.Experience);
                     player.Player.Player.skills.askRep(CDKey.Reputation);
                     await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeeme_cdk:Success"], System.Drawing.Color.Green);
-                    var log = new LogData(CDKey, player.SteamId.m_SteamID, DateTime.Now);
+                    var log = new LogData(CDKey.CKey, player.SteamId.m_SteamID, DateTime.Now);
                     m_repository.InsertLog(log);
                 }
-                else if(CDKey == null)
+                else
                 {
                     await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:KeyNotFound"], System.Drawing.Color.Red);
                     return;
                 }
 
-                if (LogList.Count > 0)
-                {
-                    await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:Redeemed"], System.Drawing.Color.Red);
-                    return;
-                }
+                
             }
             
         }

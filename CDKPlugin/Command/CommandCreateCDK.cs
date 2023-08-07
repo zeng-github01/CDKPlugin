@@ -1,8 +1,10 @@
 ﻿using CDKPlugin.Entities;
 using CDKPlugin.Repositories;
+using CDKPlugin.Until.Wrapper;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
 using OpenMod.API.Users;
 using OpenMod.Core.Commands;
 using OpenMod.Core.Console;
@@ -45,7 +47,8 @@ namespace CDKPlugin.Command
             var opra = await Context.Parameters.GetAsync<string>(0);
             var keycode = await Context.Parameters.GetAsync<string>(1);
             var type = await Context.Parameters.GetAsync<string>(2);
-            var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
+            var MysqlData = m_repository.GetCDKData(keycode);
+            //var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
 
             switch (opra)
             {
@@ -58,30 +61,57 @@ namespace CDKPlugin.Command
 
                             if (asset is ItemAsset itemAsset)
                             {
-                                var amount = await Context.Parameters.GetAsync<byte>(2);
+                                var amount = await Context.Parameters.GetAsync<byte>(4);
                                 var itemInfo = CDKItemWrapper.Create(new Item(itemAsset.id, itemAsset.amount, itemAsset.quality, itemAsset.getState()), amount);
-#pragma warning disable CS8602 // 解引用可能出现空引用。
-                                if (userData.Data.ContainsKey("cdkTemp"))
+                                
+                                if(MysqlData != null)
                                 {
-#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                                    var tempData = (CDKData)userData.Data["cdkTemp"];
-                                    tempData.Items.Add(itemInfo);
-#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+                                    MysqlData.Items.Add(itemInfo);
+                                    m_repository.UpdateCDK(MysqlData);
                                 }
                                 else
                                 {
-                                    var cdkData = new CDKData();
-                                    cdkData.CKey = keycode;
-                                    cdkData.Items.Add(itemInfo);
-                                    userData?.Data?.Add("cdkTemp", cdkData);
-                                    userData.Data.Add("cdkTemp", cdkData);
+                                    MysqlData = new CDKData();
+                                    MysqlData.CKey = keycode;
+                                    MysqlData.Items.Add(itemInfo);
+                                    m_repository.InsertCDK(MysqlData);
                                 }
-#pragma warning restore CS8602 // 解引用可能出现空引用。
-                                
 
 
                             }
 
+                            break;
+                        case "vehicle":
+                            var vehicleID = await Context.Parameters.GetAsync<ushort>(3);
+                            if(MysqlData == null)
+                            {
+                                MysqlData = new CDKData();
+                                MysqlData.CKey = keycode;
+                                MysqlData.Vehicle = vehicleID;
+                                m_repository.InsertCDK(MysqlData);
+                            }
+                            else
+                            {
+                                MysqlData.Vehicle = vehicleID;
+                                m_repository.UpdateCDK(MysqlData);
+                            }
+                            break;
+                        case "reputation":
+                            var reputationAmount = await Context.Parameters.GetAsync<int>(3);
+                            if(MysqlData == null)
+                            {
+                                MysqlData = new CDKData();
+                                MysqlData.CKey = keycode;
+                                MysqlData.Reputation = reputationAmount;
+                                m_repository.InsertCDK(MysqlData);
+                            }
+                            else
+                            {
+                                MysqlData.Reputation = reputationAmount;
+                                m_repository.UpdateCDK(MysqlData);
+                            }
+                            break;
+                        case "experience":
                             break;
 
                     }
@@ -95,18 +125,18 @@ namespace CDKPlugin.Command
 
         }
 
-        private async CDKData GetTempData()
-        {
-            CDKData? data = null;
-            var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
-#pragma warning disable CS8602 // 解引用可能出现空引用。
-            if (userData.Data.TryGetValue("cdkTemp",out object? parse))
-            {
-                data = parse as CDKData;
-            }
-#pragma warning restore CS8602 // 解引用可能出现空引用。
+//        private async CDKData GetTempData()
+//        {
+//            CDKData? data = null;
+//            var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
+//#pragma warning disable CS8602 // 解引用可能出现空引用。
+//            if (userData.Data.TryGetValue("cdkTemp",out object? parse))
+//            {
+//                data = parse as CDKData;
+//            }
+//#pragma warning restore CS8602 // 解引用可能出现空引用。
 
-             return Task.FromResult(data);
-        }
+//             return Task.FromResult(data);
+//        }
     }
 }

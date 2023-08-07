@@ -18,7 +18,7 @@ namespace CDKPlugin.Repositories
             m_DbContext = dbContext;
         }
 
-        public CDKData GetCDKData(string CKey)
+        public CDKData? GetCDKData(string CKey)
         {
             return m_DbContext.CDKData.Where(x=>x.CKey == CKey).FirstOrDefault();
         }
@@ -52,7 +52,7 @@ namespace CDKPlugin.Repositories
 
         private IQueryable<LogData> GetLogDataByCDK(string searchTerm)
         {
-            return m_DbContext.LogData.Where(x => x.CDKData.CKey == searchTerm);
+            return m_DbContext.LogData.Where(x => x.Navegation.CKey == searchTerm);
         }
 
         private IQueryable<LogData> GetLogDataByTime(DateTime searchTerm)

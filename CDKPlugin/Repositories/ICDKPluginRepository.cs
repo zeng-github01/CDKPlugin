@@ -10,7 +10,7 @@ namespace CDKPlugin.Repositories
     {
         public List<LogData> GetLogData(string parameter, DbQueryType type);
 
-        public CDKData GetCDKData(string Ckey);
+        public CDKData? GetCDKData(string Ckey);
 
         public void InsertLog(LogData logData);
 

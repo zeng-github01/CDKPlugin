@@ -1,18 +1,23 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CDKPlugin.Entities
 {
     public class LogData
     {
-        public CDKData CDKData { get; set; } = new CDKData();
+        
+        public int LogID { get; set; }
+        public string CDKey { get; set; } = string.Empty;
         public ulong SteamID { get; set; }
         public DateTime RedeemedTime { get; set; }
 
+        public CDKData Navegation { get; set; } = new CDKData();
+
         public LogData() { }
 
-        public LogData(CDKData cDKData, ulong steamID, DateTime redeemedTime)
+        public LogData(string CKey, ulong steamID, DateTime redeemedTime)
         {
-            CDKData = cDKData;
+            CDKey = CKey;
             SteamID = steamID;
             RedeemedTime = redeemedTime;
         }
