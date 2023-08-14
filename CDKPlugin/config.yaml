@@ -2,4 +2,4 @@
 # You can delete this file if you do not need a configuration
 database:
   ConnectionStrings:
-    default: "Server=127.0.0.1; Database=openmod; Port=3306; User=root; Password=password"
+    default: "Server=127.0.0.1; Database=openmod; Port=3306; User=root; Password=123456"

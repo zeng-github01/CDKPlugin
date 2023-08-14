@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CDKPlugin.Entities
@@ -7,6 +8,10 @@ namespace CDKPlugin.Entities
     {
         
         public int LogID { get; set; }
+
+        //[Column("varchar")]
+        //[StringLength(64)]
+        //[Required]
         public string CDKey { get; set; } = string.Empty;
         public ulong SteamID { get; set; }
         public DateTime RedeemedTime { get; set; }

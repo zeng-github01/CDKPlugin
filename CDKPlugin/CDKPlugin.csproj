@@ -12,10 +12,16 @@
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
 		<LangVersion>9.0</LangVersion>
-		<Version>0.1.1</Version>
-		<InformationalVersion>0.1.1</InformationalVersion>
-		<PackageVersion>0.1.1</PackageVersion>
+		<Version>0.2.0</Version>
+		<InformationalVersion>0.2.0</InformationalVersion>
+		<PackageVersion>0.2.0</PackageVersion>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Command\CommandCreateCDK.cs" />
+	  <Compile Remove="Migrations\20230814093539_RedoDatabaseTable.cs" />
+	  <Compile Remove="Migrations\20230814093539_RedoDatabaseTable.Designer.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.32" />

@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 
 namespace CDKPlugin.Entities
@@ -16,6 +17,9 @@ namespace CDKPlugin.Entities
     public class CDKData
     {
         //[Key]
+        //[Column("varchar")]
+        //[StringLength(64)]
+        //[Required]
         public string CKey { get; set; } = string.Empty;
 
         public List<CDKItemWrapper> Items { get; set; } = new List<CDKItemWrapper>();

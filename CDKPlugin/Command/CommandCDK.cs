@@ -12,6 +12,7 @@ using OpenMod.Core.Commands;
 using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
+using SmartFormat.Utilities;
 
 namespace CDKPlugin.Command
 {
