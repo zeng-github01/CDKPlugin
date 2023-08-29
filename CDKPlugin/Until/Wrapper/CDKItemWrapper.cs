@@ -62,7 +62,7 @@ namespace CDKPlugin.Until.Wrapper
 
                 return added;
             }
-            catch (Exception e)
+            catch
             {
                 //var caller = new StackTrace().GetFrame(1).GetMethod().ReflectedType.Assembly.GetName().Name;
                 //Logger.LogError($"[{caller}] [ERROR] AssetUtil GiveItem: {e.Message}");

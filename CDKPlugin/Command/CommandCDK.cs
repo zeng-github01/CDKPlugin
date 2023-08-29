@@ -27,22 +27,19 @@ namespace CDKPlugin.Command
         private readonly IStringLocalizer m_StringLocalizer;
         private readonly ICDKPluginRepository m_repository;
         private readonly ILogger<CDKPlugin> m_logger;
-        private readonly IUserDataStore m_userDataStore;
         private readonly IPermissionRoleStore m_permissionRoleStore;
-        public CommandCDK(IServiceProvider serviceProvider, IStringLocalizer mStringLocalizer, ICDKPluginRepository repository, ILogger<CDKPlugin> logger, IUserDataStore userDataStore, IPermissionRoleStore permissionRoleStore) : base(serviceProvider)
+        public CommandCDK(IServiceProvider serviceProvider, IStringLocalizer mStringLocalizer, ICDKPluginRepository repository, ILogger<CDKPlugin> logger, IPermissionRoleStore permissionRoleStore) : base(serviceProvider)
         {
             m_ServiceProvider = serviceProvider;
             m_StringLocalizer = mStringLocalizer;
             m_repository = repository;
             m_logger = logger;
-            m_userDataStore = userDataStore;
             m_permissionRoleStore = permissionRoleStore;
         }
 
 
         protected override async UniTask OnExecuteAsync()
         {
-            var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
             var keycode = await Context.Parameters.GetAsync<string>(0);
             var CDKey = m_repository.GetCDKData(keycode);
             var LogList = m_repository.GetLogData(keycode, Infrastructure.Enum.DbQueryType.ByCDK);
