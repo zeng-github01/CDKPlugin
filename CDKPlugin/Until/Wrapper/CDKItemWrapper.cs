@@ -41,7 +41,7 @@ namespace CDKPlugin.Until.Wrapper
 
         public virtual Item ToItem() => new(ItemID, Amount, Quality, State);
 
-        public virtual bool GiveItem(UnturnedPlayer player, bool dropIfInventoryFull = true)
+        public virtual bool TryGiveItem(UnturnedPlayer player, bool dropIfInventoryFull = true)
         {
             return GiveItemInternal(player, ToItem(), Amount, dropIfInventoryFull);
         }

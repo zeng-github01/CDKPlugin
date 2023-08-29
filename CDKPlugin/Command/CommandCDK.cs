@@ -55,10 +55,15 @@ namespace CDKPlugin.Command
                     }
 
 
-                    CDKey.Items.ForEach(item =>
+                    foreach(var item in CDKey.Items)
                     {
-                        item.GiveItem(player.Player);
-                    });
+                        var res = item.TryGiveItem(player.Player);
+                        if (!res)
+                        {
+                            m_logger.LogError(m_StringLocalizer["redeem_error:giveItem"]);
+                            break;
+                        }
+                    }
                     
                     VehicleTool.giveVehicle(player.Player.Player, CDKey.Vehicle);
 

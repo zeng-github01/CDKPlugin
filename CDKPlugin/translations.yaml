@@ -9,3 +9,5 @@ redeem_cdk:
   #Failure: ""
   KeyNotFound: "该密钥不存在"
   Redeemed : "该密钥已被兑换"
+redeem_error:
+  giveItem: "给予物品失败"    
