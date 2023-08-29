@@ -1,4 +1,5 @@
 ﻿using CDKPlugin.Entities;
+using CDKPlugin.Infrastructure.Enum;
 using CDKPlugin.Repositories;
 using CDKPlugin.Until.Wrapper;
 using Cysharp.Threading.Tasks;
@@ -45,83 +46,96 @@ namespace CDKPlugin.Command
         protected override async UniTask OnExecuteAsync()
         {
             var opra = await Context.Parameters.GetAsync<string>(0);
-            var keycode = await Context.Parameters.GetAsync<string>(1);
-            var type = await Context.Parameters.GetAsync<string>(2);
-            var MysqlData = m_repository.GetCDKData(keycode);
-            //var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
+            var Prisetype = await Context.Parameters.GetAsync<string>(2);
 
-            switch (opra)
+            if (Enum.TryParse<EPriseType>(Prisetype, out EPriseType epriseType) && Enum.TryParse<EKeyOprationType>(opra,out EKeyOprationType keyOprationType))
             {
-                case "add":
-                    switch (type)
-                    {
-                        case "item":
-                            var itemID = await Context.Parameters.GetAsync<ushort>(3);
-                            var asset = Assets.find(EAssetType.ITEM, itemID);
+                var keycode = await Context.Parameters.GetAsync<string>(1);
+                
+                var CDKdata = m_repository.GetCDKData(keycode);
+                
+                
 
-                            if (asset is ItemAsset itemAsset)
-                            {
-                                var amount = await Context.Parameters.GetAsync<byte>(4);
-                                var itemInfo = CDKItemWrapper.Create(new Item(itemAsset.id, itemAsset.amount, itemAsset.quality, itemAsset.getState()), amount);
-                                
-                                if(MysqlData != null)
+                switch (keyOprationType)
+                {
+                    case EKeyOprationType.Add:
+                        switch (epriseType)
+                        {
+                            case  EPriseType.Item:
+                                var itemID = await Context.Parameters.GetAsync<ushort>(3);
+                                var asset = Assets.find(EAssetType.ITEM, itemID);
+
+                                if (asset is ItemAsset itemAsset)
                                 {
-                                    MysqlData.Items.Add(itemInfo);
-                                    m_repository.UpdateCDK(MysqlData);
+                                    var amount = await Context.Parameters.GetAsync<byte>(4);
+                                    var itemInfo = CDKItemWrapper.Create(new Item(itemAsset.id, itemAsset.amount, itemAsset.quality, itemAsset.getState()), amount);
+
+                                    if (CDKdata != null)
+                                    {
+                                        CDKdata.Items.Add(itemInfo);
+                                        m_repository.UpdateCDK(CDKdata);
+                                    }
+                                    else
+                                    {
+                                        CDKdata = new CDKData();
+                                        CDKdata.CKey = keycode;
+                                        CDKdata.Items.Add(itemInfo);
+                                        m_repository.InsertCDK(CDKdata);
+                                    }
+
+
+                                }
+
+                                break;
+                            case EPriseType.Vehicle:
+                                var vehicleID = await Context.Parameters.GetAsync<ushort>(3);
+                                if (CDKdata == null)
+                                {
+                                    CDKdata = new CDKData();
+                                    CDKdata.CKey = keycode;
+                                    CDKdata.Vehicle = vehicleID;
+                                    m_repository.InsertCDK(CDKdata);
                                 }
                                 else
                                 {
-                                    MysqlData = new CDKData();
-                                    MysqlData.CKey = keycode;
-                                    MysqlData.Items.Add(itemInfo);
-                                    m_repository.InsertCDK(MysqlData);
+                                    CDKdata.Vehicle = vehicleID;
+                                    m_repository.UpdateCDK(CDKdata);
                                 }
+                                break;
+                            case EPriseType.Reputation:
+                                var reputationAmount = await Context.Parameters.GetAsync<int>(3);
+                                if (CDKdata == null)
+                                {
+                                    CDKdata = new CDKData();
+                                    CDKdata.CKey = keycode;
+                                    CDKdata.Reputation = reputationAmount;
+                                    m_repository.InsertCDK(CDKdata);
+                                }
+                                else
+                                {
+                                    CDKdata.Reputation = reputationAmount;
+                                    m_repository.UpdateCDK(CDKdata);
+                                }
+                                break;
+                            case EPriseType.Experience:
+                                break;
 
+                        }
+                        break;
+                    case EKeyOprationType.Update:
+                        break;
+                    case EKeyOprationType.Remove:
+                        break;
 
-                            }
-
-                            break;
-                        case "vehicle":
-                            var vehicleID = await Context.Parameters.GetAsync<ushort>(3);
-                            if(MysqlData == null)
-                            {
-                                MysqlData = new CDKData();
-                                MysqlData.CKey = keycode;
-                                MysqlData.Vehicle = vehicleID;
-                                m_repository.InsertCDK(MysqlData);
-                            }
-                            else
-                            {
-                                MysqlData.Vehicle = vehicleID;
-                                m_repository.UpdateCDK(MysqlData);
-                            }
-                            break;
-                        case "reputation":
-                            var reputationAmount = await Context.Parameters.GetAsync<int>(3);
-                            if(MysqlData == null)
-                            {
-                                MysqlData = new CDKData();
-                                MysqlData.CKey = keycode;
-                                MysqlData.Reputation = reputationAmount;
-                                m_repository.InsertCDK(MysqlData);
-                            }
-                            else
-                            {
-                                MysqlData.Reputation = reputationAmount;
-                                m_repository.UpdateCDK(MysqlData);
-                            }
-                            break;
-                        case "experience":
-                            break;
-
-                    }
-                    break;
-                case "modify":
-                    break;
-                case "remove":
-                    break;
+                }
+            }
+            else
+            {
 
             }
+
+
+           
 
         }
 

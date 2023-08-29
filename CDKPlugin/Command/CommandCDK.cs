@@ -7,8 +7,11 @@ using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Localization;
+using OpenMod.API.Permissions;
 using OpenMod.API.Users;
 using OpenMod.Core.Commands;
+using OpenMod.Core.Permissions;
+using OpenMod.Core.Users;
 using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
@@ -23,20 +26,23 @@ namespace CDKPlugin.Command
         private readonly IServiceProvider m_ServiceProvider;
         private readonly IStringLocalizer m_StringLocalizer;
         private readonly ICDKPluginRepository m_repository;
-        private readonly IUserManager m_userManager;
         private readonly ILogger<CDKPlugin> m_logger;
-        public CommandCDK(IServiceProvider serviceProvider, IStringLocalizer mStringLocalizer, ICDKPluginRepository repository,IUserManager userManager, ILogger<CDKPlugin> logger) : base(serviceProvider)
+        private readonly IUserDataStore m_userDataStore;
+        private readonly IPermissionRoleStore m_permissionRoleStore;
+        public CommandCDK(IServiceProvider serviceProvider, IStringLocalizer mStringLocalizer, ICDKPluginRepository repository, ILogger<CDKPlugin> logger, IUserDataStore userDataStore, IPermissionRoleStore permissionRoleStore) : base(serviceProvider)
         {
             m_ServiceProvider = serviceProvider;
             m_StringLocalizer = mStringLocalizer;
             m_repository = repository;
-            m_userManager = userManager;
             m_logger = logger;
+            m_userDataStore = userDataStore;
+            m_permissionRoleStore = permissionRoleStore;
         }
 
 
         protected override async UniTask OnExecuteAsync()
         {
+            var userData = await m_userDataStore.GetUserDataAsync(Context.Actor.Id, Context.Actor.Type);
             var keycode = await Context.Parameters.GetAsync<string>(0);
             var CDKey = m_repository.GetCDKData(keycode);
             var LogList = m_repository.GetLogData(keycode, Infrastructure.Enum.DbQueryType.ByCDK);
@@ -61,6 +67,7 @@ namespace CDKPlugin.Command
 
                     player.Player.Player.skills.askAward(CDKey.Experience);
                     player.Player.Player.skills.askRep(CDKey.Reputation);
+                    await m_permissionRoleStore.AddRoleToActorAsync(player, CDKey.PermissionRoleID);
                     await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeeme_cdk:Success"], System.Drawing.Color.Green);
                     var log = new LogData(CDKey.CKey, player.SteamId.m_SteamID, DateTime.Now);
                     m_repository.InsertLog(log);

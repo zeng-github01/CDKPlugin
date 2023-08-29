@@ -33,7 +33,7 @@ namespace CDKPlugin.Entities
         public decimal Money { get; set; }
 
 
-        public string PermissionID { get; set; } = string.Empty;
+        public string PermissionRoleID { get; set; } = string.Empty;
 
         public ICollection<LogData> LogDataList { get; set; } = new List<LogData>();
     }

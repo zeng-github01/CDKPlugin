@@ -12,7 +12,6 @@ namespace CDKPlugin.Until.Wrapper
     [Owned]
     public class CDKItemWrapper
     {
-        //private readonly ILogger m_logger;
 
         public CDKItemWrapper(ushort Itemid, byte amount, byte quality, byte[] state, byte count)
         {
@@ -68,8 +67,7 @@ namespace CDKPlugin.Until.Wrapper
                 //var caller = new StackTrace().GetFrame(1).GetMethod().ReflectedType.Assembly.GetName().Name;
                 //Logger.LogError($"[{caller}] [ERROR] AssetUtil GiveItem: {e.Message}");
                 //Logger.LogError($"[{caller}] [ERROR] Details: {e}");
-
-                throw e;
+                return false;
             }
         }
 

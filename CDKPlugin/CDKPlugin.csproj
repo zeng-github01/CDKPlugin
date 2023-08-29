@@ -18,7 +18,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Command\CommandCreateCDK.cs" />
 	  <Compile Remove="Migrations\20230814093539_RedoDatabaseTable.cs" />
 	  <Compile Remove="Migrations\20230814093539_RedoDatabaseTable.Designer.cs" />
 	</ItemGroup>
