@@ -1,4 +1,5 @@
-﻿using CDKPlugin.Until.Wrapper;
+﻿using CDKPlugin.Until;
+using CDKPlugin.Until.Wrapper;
 using HarmonyLib;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,11 +17,7 @@ namespace CDKPlugin.Entities
 {
     public class CDKData
     {
-        //[Key]
-        //[Column("varchar")]
-        //[StringLength(64)]
-        //[Required]
-        public string CKey { get; set; } = string.Empty;
+        public string CKey { get; set; } = KeyGenerator.GenerateKey();
 
         public List<CDKItemWrapper> Items { get; set; } = new List<CDKItemWrapper>();
 

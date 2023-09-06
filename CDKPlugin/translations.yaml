@@ -5,9 +5,18 @@ plugin_events:
   plugin_start: "Hello World"
   plugin_stop: "Good bye :("
 redeem_cdk:
-  Success: ""
+  Success: "成功兑换密钥"
   #Failure: ""
-  KeyNotFound: "����Կ������"
-  Redeemed : "����Կ�ѱ��һ�"
-redeem_error:
-  giveItem: "������Ʒʧ��"    
+  KeyNotFound: "该密钥不存在"
+  Redeemed : "该密钥已被兑换"
+error:
+  giveItem: "给予物品失败"
+  invaild_opration: "无效的操作"
+  invaild_temp: "无效的缓存或密钥"
+  invaild_keycode: "无效密钥码"
+  invaild_priseType: "无效的奖励类型"
+modify_cdk:
+   insert: "添加了新的兑换码:{CKey}"
+   update: "更新了当前选定的兑换码"
+   remove: "移除了当前选定的兑换码"
+   # add_item: "在当前选定的兑换码中，添加了一个新的物品"

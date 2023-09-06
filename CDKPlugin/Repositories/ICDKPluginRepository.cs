@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using CDKPlugin.Entities;
 using CDKPlugin.Infrastructure.Enum;
+using OpenMod.API.Ioc;
 using OpenMod.Unturned.Players;
 
 namespace CDKPlugin.Repositories
 {
+    [Service]
     public interface ICDKPluginRepository
     {
         public List<LogData> GetLogData(string parameter, DbQueryType type);
@@ -22,7 +24,11 @@ namespace CDKPlugin.Repositories
 
         public void UpdateCDK(CDKData cdkData);
 
-        public void DeleteCDK(List<CDKData> cDKs); 
+        public void DeleteCDKS(List<CDKData> cDKs); 
+
+        public bool KeyExist(string Ckey);
+
+        public void DeleteCDK(string Ckey);
 
     }
 }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using CDKPlugin.Contexts;
 using CDKPlugin.Entities;
-//using CDKPlugin.Entities.CDKData;
 using CDKPlugin.Infrastructure.Enum;
+using OpenMod.API.Ioc;
 using OpenMod.Unturned.Players;
 
 namespace CDKPlugin.Repositories
 {
+    [ServiceImplementation]
     public class CDKPluginRepositoryImplementation : ICDKPluginRepository
     {
         private readonly CDKPluginDbContext m_DbContext;
@@ -20,7 +21,9 @@ namespace CDKPlugin.Repositories
 
         public CDKData? GetCDKData(string CKey)
         {
-            return m_DbContext.CDKData.Where(x=>x.CKey == CKey).FirstOrDefault();
+            if (string.IsNullOrEmpty(CKey)) return null;
+
+            return m_DbContext.CDKData.Where(x => x.CKey == CKey).FirstOrDefault();
         }
 
         public List<LogData> GetLogData(string parameter, DbQueryType type)
@@ -68,31 +71,50 @@ namespace CDKPlugin.Repositories
         public void InsertLog(LogData logData)
         {
             m_DbContext.LogData.Add(logData);
+            m_DbContext.SaveChanges();
         }
 
         public void UpdateLog(LogData logData)
         {
             m_DbContext.LogData.Update(logData);
+            m_DbContext.SaveChanges();
         }
 
         public void DeleteLog(List<LogData> logs)
         {
             m_DbContext.LogData.RemoveRange(logs);
+            m_DbContext.SaveChanges();
         }
 
         public void InsertCDK(CDKData cdkData)
         {
             m_DbContext.CDKData.Add(cdkData);
+            m_DbContext.SaveChanges();
         }
 
         public void UpdateCDK(CDKData cdkData)
         {
            m_DbContext.CDKData.Update(cdkData);
+            m_DbContext.SaveChanges();
         }
 
-        public void DeleteCDK(List<CDKData> cDKs)
+        public void DeleteCDKS(List<CDKData> cDKs)
         {
             m_DbContext.CDKData.RemoveRange(cDKs);
+            m_DbContext.SaveChanges();
+        }
+
+        public bool KeyExist(string Ckey)
+        {
+            return m_DbContext.CDKData.Any(x=> x.CKey.Equals(Ckey));
+        }
+
+        public void DeleteCDK(string Ckey)
+        {
+            var beRemove = GetCDKData(Ckey);
+            if (beRemove == null) return; 
+            m_DbContext.CDKData.Remove(beRemove);
+            m_DbContext.SaveChanges();
         }
     }
 }

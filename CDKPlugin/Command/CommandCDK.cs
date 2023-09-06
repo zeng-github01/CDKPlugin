@@ -45,7 +45,6 @@ namespace CDKPlugin.Command
             var LogList = m_repository.GetLogData(keycode, Infrastructure.Enum.DbQueryType.ByCDK);
             if(Context.Actor is UnturnedUser player)
             {
-                var uplayer = Context.Actor as UnturnedUser;
                 if (CDKey != null)
                 {
                     if (LogList.Count > 0)
@@ -60,12 +59,15 @@ namespace CDKPlugin.Command
                         var res = item.TryGiveItem(player.Player);
                         if (!res)
                         {
-                            m_logger.LogError(m_StringLocalizer["redeem_error:giveItem"]);
+                            await Context.Actor.PrintMessageAsync(m_StringLocalizer["error:giveItem"],System.Drawing.Color.Red);
                             break;
                         }
                     }
+                    if(CDKey.Vehicle != 0)
+                    {
+                        VehicleTool.giveVehicle(player.Player.Player, CDKey.Vehicle);
+                    }
                     
-                    VehicleTool.giveVehicle(player.Player.Player, CDKey.Vehicle);
 
                     player.Player.Player.skills.askAward(CDKey.Experience);
                     player.Player.Player.skills.askRep(CDKey.Reputation);
@@ -79,8 +81,6 @@ namespace CDKPlugin.Command
                     await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:KeyNotFound"], System.Drawing.Color.Red);
                     return;
                 }
-
-                
             }
             
         }

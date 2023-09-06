@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using OpenMod.Core.Ioc;
 using OpenMod.Unturned.Players;
 using SDG.Unturned;
 using System;
@@ -9,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace CDKPlugin.Until.Wrapper
 {
+    [DontAutoRegister]
     [Owned]
     public class CDKItemWrapper
     {
-
         public CDKItemWrapper(ushort Itemid, byte amount, byte quality, byte[] state, byte count)
         {
             Amount = amount;

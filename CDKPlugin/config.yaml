@@ -3,3 +3,10 @@
 database:
   ConnectionStrings:
     default: "Server=127.0.0.1; Database=openmod; Port=3306; User=root; Password=123456"
+random:
+    MaxLength: 25
+    CharSet: "1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z"
+    # Support type: default | hashcode
+    type: default
+# Add "-" separator in CDKey at specified interval
+    characterSpacing: 5  

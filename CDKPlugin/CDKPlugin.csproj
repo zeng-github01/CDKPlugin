@@ -12,14 +12,16 @@
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<NoWarn>$(NoWarn);NU1701;NU1702;CS0436</NoWarn>
 		<LangVersion>9.0</LangVersion>
-		<Version>0.2.0</Version>
-		<InformationalVersion>0.2.0</InformationalVersion>
-		<PackageVersion>0.2.0</PackageVersion>
+		<Version>0.5.0</Version>
+		<InformationalVersion>0.5.0</InformationalVersion>
+		<PackageVersion>0.5.0</PackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Command\DebugCommandCall.cs" />
 	  <Compile Remove="Migrations\20230814093539_RedoDatabaseTable.cs" />
 	  <Compile Remove="Migrations\20230814093539_RedoDatabaseTable.Designer.cs" />
+	  <Compile Remove="Until\Wrapper\VehicleWrapper.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -29,9 +31,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="MySql.Data" Version="8.1.0" />
-		<PackageReference Include="OpenMod.EntityFrameworkCore" Version="3.5.0" />
-		<PackageReference Include="OpenMod.EntityFrameworkCore.MySql" Version="3.5.0" />
-		<PackageReference Include="OpenMod.Unturned" Version="3.5.0" />
+		<PackageReference Include="OpenMod.EntityFrameworkCore" Version="3.5.2" />
+		<PackageReference Include="OpenMod.EntityFrameworkCore.MySql" Version="3.5.2" />
+		<PackageReference Include="OpenMod.Unturned" Version="3.5.2" />
 		<PackageReference Include="Legacy2CPSWorkaround" Version="1.0.0">
 			<PrivateAssets>All</PrivateAssets>
 		</PackageReference>
