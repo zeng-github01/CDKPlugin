@@ -32,7 +32,7 @@ namespace CDKPlugin
         {
             await dbContext.Database.MigrateAsync();
             Until.KeyGenerator.Initialize(serviceProvider);
-            logger.LogWarning("database migration succeed!");
+            //logger.LogWarning("database migration succeed!");
             //await UniTask.SwitchToMainThread(); //uncomment if you have to access Unturned or UnityEngine APIs
             logger.LogInformation(stringLocalizer["plugin_events:plugin_start"]);
 

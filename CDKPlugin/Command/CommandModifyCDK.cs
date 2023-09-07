@@ -47,21 +47,21 @@ namespace CDKPlugin.Command
         {
             var opra = await Context.Parameters.GetAsync<EKeyOprationType>(0);
 
-            EPriseType? Prisetype = null;
+            EColunmType? Prisetype = null;
             string? keyCode = null;
 
             if(Context.Parameters.Length > 1)
             {
-                if (!Enum.TryParse<EPriseType>(await Context.Parameters.GetAsync<string>(1), true, out EPriseType result))
+                if (!Enum.TryParse<EColunmType>(await Context.Parameters.GetAsync<string>(1), true, out EColunmType result))
                 {
                     //已指定密钥
                     keyCode = await Context.Parameters.GetAsync<string>(1);
-                    Prisetype = await Context.Parameters.GetAsync<EPriseType>(2);
+                    Prisetype = await Context.Parameters.GetAsync<EColunmType>(2);
                 }
                 else
                 {
                     //未指定密钥
-                    Prisetype = await Context.Parameters.GetAsync<EPriseType>(1);
+                    Prisetype = await Context.Parameters.GetAsync<EColunmType>(1);
                 }
             }
             
@@ -76,7 +76,7 @@ namespace CDKPlugin.Command
                     case EKeyOprationType.Add:
                     switch (Prisetype)
                     {
-                        case EPriseType.Item:
+                        case EColunmType.Item:
                             var itemID = keyCode != null ? await Context.Parameters.GetAsync<ushort>(3) : await Context.Parameters.GetAsync<ushort>(2);
                             var asset = Assets.find(EAssetType.ITEM, itemID);
 
@@ -95,7 +95,7 @@ namespace CDKPlugin.Command
                                     Context.Actor.Type, "tempCDK", temp);
                             }
                             break;
-                        case EPriseType.Vehicle:
+                        case EColunmType.Vehicle:
                             var vehicleID = keyCode != null ? await Context.Parameters.GetAsync<ushort>(3) : await Context.Parameters.GetAsync<ushort>(2);
                             temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
                             temp.Vehicle = vehicleID;
@@ -103,7 +103,7 @@ namespace CDKPlugin.Command
                                     Context.Actor.Type, "tempCDK", temp);
 
                             break;
-                        case EPriseType.Reputation:
+                        case EColunmType.Reputation:
                             var reputationAmount = keyCode != null ? await Context.Parameters.GetAsync<int>(3) : await Context.Parameters.GetAsync<int>(2);
 
                             temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
@@ -111,24 +111,31 @@ namespace CDKPlugin.Command
                             await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
                                     Context.Actor.Type, "tempCDK", temp);
                             break;
-                        case EPriseType.Experience:
+                        case EColunmType.Experience:
                             var expAmount = keyCode != null ? await Context.Parameters.GetAsync<uint>(3) : await Context.Parameters.GetAsync<uint>(2);
                             temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
                             temp.Experience = expAmount;
                             await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
                                     Context.Actor.Type, "tempCDK", temp);
                             break;
-                        case EPriseType.Money:
+                        case EColunmType.Money:
                             var moneyAmount = keyCode != null ? await Context.Parameters.GetAsync<decimal>(3) : await Context.Parameters.GetAsync<decimal>(2);
                             temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
                             temp.Money = moneyAmount;
                             await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
                                     Context.Actor.Type, "tempCDK", temp);
                             break;
-                        case EPriseType.PermissionRole:
+                        case EColunmType.PermissionRole:
                             var permissionString = keyCode != null ? await Context.Parameters.GetAsync<string>(3) : await Context.Parameters.GetAsync<string>(2);
                             temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
                             temp.PermissionRoleID = permissionString;
+                            await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
+                                    Context.Actor.Type, "tempCDK", temp);
+                            break;
+                        case EColunmType.MaxRedeem:
+                            var maxRedeem = keyCode != null ? await Context.Parameters.GetAsync<int>(3) : await Context.Parameters.GetAsync<int>(2);
+                            temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
+                            temp.MaxRedeem = maxRedeem;
                             await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
                                     Context.Actor.Type, "tempCDK", temp);
                             break;
@@ -170,7 +177,7 @@ namespace CDKPlugin.Command
 
                     switch (Prisetype)
                     {
-                        case EPriseType.Item:
+                        case EColunmType.Item:
                             var itemID = keyCode != null ? await Context.Parameters.GetAsync<ushort>(3) : await Context.Parameters.GetAsync<ushort>(2);
                            
                             if (temp != null)
@@ -184,7 +191,7 @@ namespace CDKPlugin.Command
                             }
 
                             break;
-                        case EPriseType.Vehicle:
+                        case EColunmType.Vehicle:
                             //var vehicleID = await Context.Parameters.GetAsync<ushort>(3);
                             if (temp != null)
                             {
@@ -195,7 +202,7 @@ namespace CDKPlugin.Command
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
                             }
                             break;
-                        case EPriseType.PermissionRole:
+                        case EColunmType.PermissionRole:
                             //var permissionString = keyCode != null ? await Context.Parameters.GetAsync<string>(3) : await Context.Parameters.GetAsync<string>(2);
                             if (temp != null)
                             {
@@ -206,7 +213,7 @@ namespace CDKPlugin.Command
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
                             }
                             break;
-                        case EPriseType.Money: 
+                        case EColunmType.Money: 
                             if (temp != null)
                             {
                                 temp.Money = 0;
@@ -216,7 +223,7 @@ namespace CDKPlugin.Command
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
                             }
                             break;
-                        case EPriseType.Experience:
+                        case EColunmType.Experience:
                             if (temp != null)
                             {
                                 temp.Experience = 0;
@@ -226,7 +233,7 @@ namespace CDKPlugin.Command
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
                             }
                             break;
-                        case EPriseType.Reputation:
+                        case EColunmType.Reputation:
                             if (temp != null)
                             {
                                 temp.Reputation = 0;
@@ -234,6 +241,12 @@ namespace CDKPlugin.Command
                             else
                             {
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
+                            }
+                            break;
+                        case EColunmType.MaxRedeem:
+                            if (temp != null)
+                            {
+                                temp.MaxRedeem = 1;
                             }
                             break;
                     }

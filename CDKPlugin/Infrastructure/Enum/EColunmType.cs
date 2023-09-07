@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace CDKPlugin.Infrastructure.Enum
 {
-    public enum EPriseType
+    public enum EColunmType
     {
         Item,
         Vehicle,
         PermissionRole,
         Money,
         Reputation,
-        Experience
+        Experience,
+        MaxRedeem
     }
 }

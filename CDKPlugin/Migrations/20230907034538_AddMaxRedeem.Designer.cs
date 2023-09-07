@@ -3,14 +3,16 @@ using System;
 using CDKPlugin.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CDKPlugin.Migrations
 {
     [DbContext(typeof(CDKPluginDbContext))]
-    partial class CDKPluginDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230907034538_AddMaxRedeem")]
+    partial class AddMaxRedeem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +54,9 @@ namespace CDKPlugin.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("CDKDataCKey")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
                     b.Property<string>("CDKey")
                         .IsRequired()
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
@@ -63,6 +68,8 @@ namespace CDKPlugin.Migrations
                         .HasColumnType("bigint unsigned");
 
                     b.HasKey("LogID");
+
+                    b.HasIndex("CDKDataCKey");
 
                     b.HasIndex("CDKey", "SteamID")
                         .IsUnique();
@@ -108,11 +115,9 @@ namespace CDKPlugin.Migrations
 
             modelBuilder.Entity("CDKPlugin.Entities.LogData", b =>
                 {
-                    b.HasOne("CDKPlugin.Entities.CDKData", "CDKData")
+                    b.HasOne("CDKPlugin.Entities.CDKData", null)
                         .WithMany("LogDataList")
-                        .HasForeignKey("CDKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CDKDataCKey");
                 });
 #pragma warning restore 612, 618
         }

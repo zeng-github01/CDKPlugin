@@ -29,6 +29,7 @@ namespace CDKPlugin.Entities
 
         public decimal Money { get; set; }
 
+        public int MaxRedeem { get; set; } = 1;
 
         public string PermissionRoleID { get; set; } = string.Empty;
 

@@ -3,14 +3,16 @@ using System;
 using CDKPlugin.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CDKPlugin.Migrations
 {
     [DbContext(typeof(CDKPluginDbContext))]
-    partial class CDKPluginDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230907073557_RedoHasForeignKeyLogData")]
+    partial class RedoHasForeignKeyLogData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

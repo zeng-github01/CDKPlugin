@@ -31,11 +31,10 @@ namespace CDKPlugin.Contexts
 
             modelBuilder.Entity<LogData>().Property(i => i.RedeemedTime).IsRequired();
             modelBuilder.Entity<LogData>().HasIndex(x => new { x.CDKey, x.SteamID }).IsUnique();
-            //modelBuilder.Entity<CDKData>().HasMany(x => x.LogDataList).WithOne(y => y.CDKData).HasForeignKey(x => x.CDKey);
-            modelBuilder.Entity<LogData>().HasOne(x => x.Navegation).WithMany(y => y.LogDataList).HasForeignKey(x => x.CDKey);
-
-            //modelBuilder.Entity<CDKData>().Property(i => i.CKey).HasMaxLength(64);
-            //modelBuilder.Entity<CDKData>().Property(i => i.CKey).HasColumnType("varchar(64)");
+            modelBuilder.Entity<LogData>()
+                .HasOne(i => i.CDKData)
+                .WithMany(c => c.LogDataList)
+                .HasForeignKey(i => i.CDKey);
         }
     }
 }

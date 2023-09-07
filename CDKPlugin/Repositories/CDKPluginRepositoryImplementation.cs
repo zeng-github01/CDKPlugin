@@ -55,7 +55,7 @@ namespace CDKPlugin.Repositories
 
         private IQueryable<LogData> GetLogDataByCDK(string searchTerm)
         {
-            return m_DbContext.LogData.Where(x => x.Navegation.CKey == searchTerm);
+            return m_DbContext.LogData.Where(x => x.CDKey == searchTerm);
         }
 
         private IQueryable<LogData> GetLogDataByTime(DateTime searchTerm)
@@ -116,5 +116,12 @@ namespace CDKPlugin.Repositories
             m_DbContext.CDKData.Remove(beRemove);
             m_DbContext.SaveChanges();
         }
+
+        public int GetKeyRedeemCount(string Ckey)
+        {
+            return GetLogDataByCDK(Ckey).Count();
+        }
+
+        
     }
 }

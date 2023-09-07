@@ -41,20 +41,28 @@ namespace CDKPlugin.Command
         protected override async UniTask OnExecuteAsync()
         {
             var keycode = await Context.Parameters.GetAsync<string>(0);
-            var CDKey = m_repository.GetCDKData(keycode);
-            var LogList = m_repository.GetLogData(keycode, Infrastructure.Enum.DbQueryType.ByCDK);
+            var CDKey = m_repository.GetCDKData(keycode.ToUpper());
+            var LogList = m_repository.GetLogData(Context.Actor.Id, Infrastructure.Enum.DbQueryType.BySteamID);
             if(Context.Actor is UnturnedUser player)
             {
                 if (CDKey != null)
                 {
-                    if (LogList.Count > 0)
+                    if (LogList.Find(x => x.CDKey == CDKey.CKey) != null)
                     {
                         await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:Redeemed"], System.Drawing.Color.Red);
                         return;
                     }
 
+                    if(m_repository.GetKeyRedeemCount(CDKey.CKey) >= CDKey.MaxRedeem)
+                    {
+                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem:MaxRedeem"],System.Drawing.Color.Red);
+                        return;
+                    }
 
-                    foreach(var item in CDKey.Items)
+                    await UniTask.SwitchToMainThread();
+
+
+                    foreach (var item in CDKey.Items)
                     {
                         var res = item.TryGiveItem(player.Player);
                         if (!res)
@@ -68,13 +76,27 @@ namespace CDKPlugin.Command
                         VehicleTool.giveVehicle(player.Player.Player, CDKey.Vehicle);
                     }
                     
+                    if(CDKey.Experience != 0)
+                    {
+                        player.Player.Player.skills.askAward(CDKey.Experience);
+                    }
 
-                    player.Player.Player.skills.askAward(CDKey.Experience);
-                    player.Player.Player.skills.askRep(CDKey.Reputation);
-                    await m_permissionRoleStore.AddRoleToActorAsync(player, CDKey.PermissionRoleID);
-                    await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeeme_cdk:Success"], System.Drawing.Color.Green);
+                    if(CDKey.Reputation != 0)
+                    {
+                        player.Player.Player.skills.askRep(CDKey.Reputation);
+                    }
+
+                    if(!string.IsNullOrEmpty(CDKey.PermissionRoleID))
+                    {
+                        await m_permissionRoleStore.AddRoleToActorAsync(player, CDKey.PermissionRoleID);
+                    }
+                    
+                    
+                    
+                    await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:Success"], System.Drawing.Color.Green);
                     var log = new LogData(CDKey.CKey, player.SteamId.m_SteamID, DateTime.Now);
                     m_repository.InsertLog(log);
+                    await UniTask.SwitchToThreadPool();
                 }
                 else
                 {

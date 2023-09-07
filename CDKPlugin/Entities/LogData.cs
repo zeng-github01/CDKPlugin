@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,7 +13,7 @@ namespace CDKPlugin.Entities
         public ulong SteamID { get; set; }
         public DateTime RedeemedTime { get; set; }
 
-        public CDKData Navegation { get; set; } = new CDKData();
+        public CDKData CDKData { get; set; } = new CDKData();
 
         public LogData() { }
 

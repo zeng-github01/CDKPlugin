@@ -30,5 +30,7 @@ namespace CDKPlugin.Repositories
 
         public void DeleteCDK(string Ckey);
 
+        public int GetKeyRedeemCount(string Ckey); 
+
     }
 }

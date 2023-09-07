@@ -6,9 +6,9 @@ plugin_events:
   plugin_stop: "Good bye :("
 redeem_cdk:
   Success: "成功兑换密钥"
-  #Failure: ""
   KeyNotFound: "该密钥不存在"
   Redeemed : "该密钥已被兑换"
+  MaxRedeem: "已达到最大兑换数量"
 error:
   giveItem: "给予物品失败"
   invaild_opration: "无效的操作"
