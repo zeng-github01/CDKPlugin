@@ -10,7 +10,7 @@ namespace CDKPlugin.Infrastructure.Enum
     {
         Item,
         Vehicle,
-        PermissionGroup,
+        PermissionRole,
         Money,
         Reputation,
         Experience

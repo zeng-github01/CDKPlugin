@@ -26,7 +26,7 @@ namespace CDKPlugin.Command
     [CommandActor(typeof(UnturnedUser))]
     [CommandActor(typeof(ConsoleActor))]
     [CommandDescription("A command that used to modify cdk in game")]
-    [CommandSyntax("<Add|Update|Remove> [Key] [Item/Hand|Vehicle|Reputation|Experience|Money]  [ID|Amount] [ItemAmount]")]
+    [CommandSyntax("<Add|Update|Remove> [Key] [Item/Hand|Vehicle|Reputation|Experience|Money] [ID|Amount] [ItemAmount]")]
     public class CommandModifyCDK : UnturnedCommand
     {
         private readonly IServiceProvider m_ServiceProvider;
@@ -50,15 +50,19 @@ namespace CDKPlugin.Command
             EPriseType? Prisetype = null;
             string? keyCode = null;
 
-            if (Context.Parameters.Length == 4)
+            if(Context.Parameters.Length > 1)
             {
-                Prisetype = await Context.Parameters.GetAsync<EPriseType>(1);
-            }
-
-            if(Context.Parameters.Length == 5)
-            {
-                Prisetype = await Context.Parameters.GetAsync<EPriseType>(2);
-                keyCode = await Context.Parameters.GetAsync<string>(1);
+                if (!Enum.TryParse<EPriseType>(await Context.Parameters.GetAsync<string>(1), true, out EPriseType result))
+                {
+                    //已指定密钥
+                    keyCode = await Context.Parameters.GetAsync<string>(1);
+                    Prisetype = await Context.Parameters.GetAsync<EPriseType>(2);
+                }
+                else
+                {
+                    //未指定密钥
+                    Prisetype = await Context.Parameters.GetAsync<EPriseType>(1);
+                }
             }
             
 
@@ -121,7 +125,7 @@ namespace CDKPlugin.Command
                             await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
                                     Context.Actor.Type, "tempCDK", temp);
                             break;
-                        case EPriseType.PermissionGroup:
+                        case EPriseType.PermissionRole:
                             var permissionString = keyCode != null ? await Context.Parameters.GetAsync<string>(3) : await Context.Parameters.GetAsync<string>(2);
                             temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
                             temp.PermissionRoleID = permissionString;
@@ -191,7 +195,7 @@ namespace CDKPlugin.Command
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
                             }
                             break;
-                        case EPriseType.PermissionGroup:
+                        case EPriseType.PermissionRole:
                             //var permissionString = keyCode != null ? await Context.Parameters.GetAsync<string>(3) : await Context.Parameters.GetAsync<string>(2);
                             if (temp != null)
                             {
