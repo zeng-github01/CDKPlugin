@@ -108,6 +108,8 @@ namespace CDKPlugin.Repositories
 
         public bool KeyExist(string Ckey)
         {
+            if(string.IsNullOrEmpty(Ckey)) throw new ArgumentNullException(nameof(Ckey), "The Ckey cannot be null or empty.");
+
             return m_DbContext.CDKData.Any(x=> x.CKey.Equals(Ckey));
         }
 

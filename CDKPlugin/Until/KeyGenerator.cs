@@ -50,8 +50,10 @@ namespace CDKPlugin.Until
            var MaxLength = m_configuration.GetValue<int>("random:Maxlength");
            var characterSpacing = m_configuration.GetValue<int>("random:characterSpacing");
 
-            if (charset.Length == 0) throw new ArgumentNullException(nameof(charset), m_localization?["error:invaild_charset"]);
-
+            if (charset.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(charset), m_localization?["error:invaild_charset"]);
+            }
             StringBuilder randomString = new StringBuilder();
 
             for (int i = 0; i < MaxLength; i++)

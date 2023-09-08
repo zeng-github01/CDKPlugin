@@ -102,6 +102,27 @@ namespace CDKPlugin.Command
                     switch (Prisetype)
                     {
                         case EColunmType.Item:
+                            if(Context.Actor is UnturnedUser user)
+                            {
+                                var itemString = keyCode != null ? await Context.Parameters.GetAsync<string>(3) : await Context.Parameters.GetAsync<string>(2);
+                                if (!ushort.TryParse(itemString,out _) && itemString == "hand" && user.Player.Player.equipment.isSelected)
+                                {
+                                    
+                                    var id = user.Player.Player.equipment.itemID;
+                                    var amount = user.Player.Player.equipment.asset.amount;
+                                    var qua = user.Player.Player.equipment.quality;
+                                    var sate = user.Player.Player.equipment.state;
+                                    var itemamount = keyCode != null ? await Context.Parameters.GetAsync<byte>(4) : await Context.Parameters.GetAsync<byte>(3);
+                                   var itemInfo = CDKItemWrapper.Create(new Item(id, amount, qua, sate), itemamount);
+
+                                    temp ??= keyCode != null ? m_repository.GetCDKData(keyCode) ?? new CDKData() : new CDKData();
+                                    temp.Items.Add(itemInfo);
+                                    await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id,
+                                        Context.Actor.Type, "tempCDK", temp);
+                                    return;
+                                }
+                            }
+
                             var itemID = keyCode != null ? await Context.Parameters.GetAsync<ushort>(3) : await Context.Parameters.GetAsync<ushort>(2);
                             var asset = Assets.find(EAssetType.ITEM, itemID);
 
