@@ -46,11 +46,11 @@ namespace CDKPlugin.Until
                 default:
                     throw new ArgumentNullException(nameof(randomType), m_localization?["error:invaild_random_type"]);
             }
-           var charset = m_configuration.GetValue<string>("random:CharSet").Split(',');
+           var charset = m_configuration.GetValue<string>("random:CharSet").Trim().Split(',');
            var MaxLength = m_configuration.GetValue<int>("random:Maxlength");
            var characterSpacing = m_configuration.GetValue<int>("random:characterSpacing");
 
-            if (charset.Length == 0) throw new ArgumentNullException(nameof(charset),m_localization?["error:invaild_charset"]);
+            if (charset.Length == 0) throw new ArgumentNullException(nameof(charset), m_localization?["error:invaild_charset"]);
 
             StringBuilder randomString = new StringBuilder();
 
