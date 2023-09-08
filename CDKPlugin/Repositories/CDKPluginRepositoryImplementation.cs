@@ -21,13 +21,15 @@ namespace CDKPlugin.Repositories
 
         public CDKData? GetCDKData(string CKey)
         {
-            if (string.IsNullOrEmpty(CKey)) return null;
+            if (string.IsNullOrEmpty(CKey)) throw new ArgumentNullException(nameof(CKey), "The key cannot be null or empty.");
 
             return m_DbContext.CDKData.Where(x => x.CKey == CKey).FirstOrDefault();
         }
 
         public List<LogData> GetLogData(string parameter, DbQueryType type)
         {
+            if (string.IsNullOrEmpty(parameter)) throw new ArgumentNullException(nameof(parameter), "The parameter cannot be null or empty.");
+
             return GetLogDatasInternal(parameter, type).ToList();
         }
 

@@ -2,6 +2,7 @@
 using CDKPlugin.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using OpenMod.Core.Ioc;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,21 @@ namespace CDKPlugin.Until
     {
         private static ICDKPluginRepository? m_repository;
         private static IConfiguration? m_configuration;
+        private static IStringLocalizer? m_localization;
 
         internal static void Initialize(IServiceProvider serviceProvider)
         {
             m_repository = serviceProvider.GetService<ICDKPluginRepository>();
             m_configuration = serviceProvider.GetService<IConfiguration>();
+            m_localization = serviceProvider.GetService<IStringLocalizer>();
         }
         internal static string GenerateKey()
         {
+            if(m_repository == null || m_configuration == null || m_localization == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var randomType = m_configuration?.GetSection("random:type")
                 .Get<ERandomType>();
             Random random = new Random();
@@ -40,7 +48,7 @@ namespace CDKPlugin.Until
            var MaxLength = m_configuration.GetValue<int>("random:Maxlength");
            var characterSpacing = m_configuration.GetValue<int>("random:characterSpacing");
 
-            if (charset.Length == 0) return string.Empty;
+            if (charset.Length == 0) throw new ArgumentNullException(nameof(charset),m_localization?["error:invaild_charset"]);
 
             StringBuilder randomString = new StringBuilder();
 

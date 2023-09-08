@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 //using dnlib.DotNet;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using OpenMod.API.Commands;
 using OpenMod.API.Localization;
 using OpenMod.API.Permissions;
 using OpenMod.API.Users;
@@ -49,13 +50,13 @@ namespace CDKPlugin.Command
                 {
                     if (LogList.Find(x => x.CDKey == CDKey.CKey) != null)
                     {
-                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:Redeemed"], System.Drawing.Color.Red);
+                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem_cdk:Redeemed"], System.Drawing.Color.Yellow);
                         return;
                     }
 
                     if(m_repository.GetKeyRedeemCount(CDKey.CKey) >= CDKey.MaxRedeem)
                     {
-                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem:MaxRedeem"],System.Drawing.Color.Red);
+                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["redeem:MaxRedeem"],System.Drawing.Color.Yellow);
                         return;
                     }
 
@@ -67,8 +68,12 @@ namespace CDKPlugin.Command
                         var res = item.TryGiveItem(player.Player);
                         if (!res)
                         {
-                            await Context.Actor.PrintMessageAsync(m_StringLocalizer["error:giveItem"],System.Drawing.Color.Red);
-                            break;
+                            throw new UserFriendlyException(m_StringLocalizer["error:giveItem"]);
+                        }
+                        else
+                        {
+                            CDKey.Items.Remove(item);
+                            m_repository.UpdateCDK(CDKey);
                         }
                     }
                     if(CDKey.Vehicle != 0)

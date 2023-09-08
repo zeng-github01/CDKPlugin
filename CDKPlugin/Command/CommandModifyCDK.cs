@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Commands;
+using OpenMod.API.Persistence;
 using OpenMod.API.Users;
 using OpenMod.Core.Commands;
 using OpenMod.Core.Console;
@@ -13,6 +14,8 @@ using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
 using Serilog;
+using SmartFormat.Utilities;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,13 +37,16 @@ namespace CDKPlugin.Command
         private readonly ICDKPluginRepository m_repository;
         private readonly ILogger<CDKPlugin> m_logger;
         private readonly IUserDataStore m_userDataStore;
-        public CommandModifyCDK(IServiceProvider serviceProvider, ICDKPluginRepository repository, IStringLocalizer stringLocalizer, ILogger<CDKPlugin> logger,IUserDataStore userData) : base(serviceProvider)
+        private readonly IDataStore m_DataStore;
+
+        public CommandModifyCDK(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer, ICDKPluginRepository repository, ILogger<CDKPlugin> logger, IUserDataStore userDataStore, IDataStore dataStore):base(serviceProvider)
         {
             m_ServiceProvider = serviceProvider;
-            m_repository = repository;
             m_StringLocalizer = stringLocalizer;
+            m_repository = repository;
             m_logger = logger;
-            m_userDataStore = userData;
+            m_userDataStore = userDataStore;
+            m_DataStore = dataStore;
         }
 
         protected override async UniTask OnExecuteAsync()
@@ -64,16 +70,35 @@ namespace CDKPlugin.Command
                     Prisetype = await Context.Parameters.GetAsync<EColunmType>(1);
                 }
             }
-            
 
+            HashSet<string>? modifyingKeys = null;
                 var temp = await m_userDataStore.GetUserDataAsync<CDKData>(Context.Actor.Id, Context.Actor.Type, "tempCDK");
-                
-                
-                
+                bool v = await m_DataStore.ExistsAsync("modifyingKey");
+             if(!v)
+             {
+                 await m_DataStore.SaveAsync("modifyingKey",new HashSet<string>());
+             }
+             else
+             {
+                 modifyingKeys = await m_DataStore.LoadAsync<HashSet<string>>("modifyingKey");
+             }
 
-                switch (opra)
+            if (keyCode != null && modifyingKeys != null)
+            {
+                if (modifyingKeys.Contains(keyCode))
                 {
-                    case EKeyOprationType.Add:
+                    throw new UserFriendlyException(m_StringLocalizer["modify_cdk:modifying"]);
+                }
+                else
+                {
+                    modifyingKeys.Add(keyCode);
+                    await m_DataStore.SaveAsync("modifyingKey", modifyingKeys);
+                }
+            }
+
+            switch (opra)
+            {
+                case EKeyOprationType.Add:
                     switch (Prisetype)
                     {
                         case EColunmType.Item:
@@ -142,44 +167,46 @@ namespace CDKPlugin.Command
                         default:
                             throw new UserFriendlyException(m_StringLocalizer["error:invaild_priseType"]);
                     }
-                        break;
-                    case EKeyOprationType.Update:
-                        if(temp != null)
+                    break;
+                case EKeyOprationType.Update:
+                    if (temp != null)
+                    {
+                        if (!m_repository.KeyExist(temp.CKey))
                         {
-                            if(!m_repository.KeyExist(temp.CKey))
-                            {
-                                m_repository.InsertCDK(temp);
-                                await Context.Actor.PrintMessageAsync(m_StringLocalizer["modify_cdk:insert", new {CKey = temp.CKey}]);
-                            }
-                            else
-                            {
-                                m_repository.UpdateCDK(temp);
-                                await Context.Actor.PrintMessageAsync(m_StringLocalizer["modify_cdk:update"]);
-                            }
-                            await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id, Context.Actor.Type, "tempCDK", null);
+                            m_repository.InsertCDK(temp);
+                            await Context.Actor.PrintMessageAsync(m_StringLocalizer["modify_cdk:insert", new { CKey = temp.CKey }]);
                         }
                         else
                         {
-                            throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
+                            m_repository.UpdateCDK(temp);
+                            await Context.Actor.PrintMessageAsync(m_StringLocalizer["modify_cdk:update"]);
                         }
-                        break;
-                    case EKeyOprationType.Remove:
+                        await m_userDataStore.SetUserDataAsync<CDKData>(Context.Actor.Id, Context.Actor.Type, "tempCDK", null);
+                        if (keyCode != null && modifyingKeys != null) modifyingKeys.Remove(keyCode);
+                        await m_DataStore.SaveAsync("modifyingKey", modifyingKeys);
+                    }
+                    else
+                    {
+                        throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
+                    }
+                    break;
+                case EKeyOprationType.Remove:
 
-                        if (Context.Parameters.Length < 3)
-                        {
-                            keyCode = keyCode = await Context.Parameters.GetAsync<string>(1);
-                            if (string.IsNullOrEmpty(keyCode)) throw new UserFriendlyException(m_StringLocalizer["redeem_error:invaild_keycode"]);
-                            m_repository.DeleteCDK(keyCode?.ToUpper() ?? string.Empty);
-                            await Context.Actor.PrintMessageAsync(m_StringLocalizer["modify_cdk:remove"]);
-                            return;
-                        }
+                    if (Context.Parameters.Length < 3)
+                    {
+                        keyCode = keyCode = await Context.Parameters.GetAsync<string>(1);
+                        if (string.IsNullOrEmpty(keyCode)) throw new UserFriendlyException(m_StringLocalizer["redeem_error:invaild_keycode"]);
+                        m_repository.DeleteCDK(keyCode?.ToUpper() ?? string.Empty);
+                        await Context.Actor.PrintMessageAsync(m_StringLocalizer["modify_cdk:remove"]);
+                        return;
+                    }
                     temp ??= m_repository.GetCDKData(keyCode ?? string.Empty);
 
                     switch (Prisetype)
                     {
                         case EColunmType.Item:
                             var itemID = keyCode != null ? await Context.Parameters.GetAsync<ushort>(3) : await Context.Parameters.GetAsync<ushort>(2);
-                           
+
                             if (temp != null)
                             {
                                 var removedItem = temp.Items.Find(x => x.ItemID == itemID);
@@ -213,7 +240,7 @@ namespace CDKPlugin.Command
                                 throw new UserFriendlyException(m_StringLocalizer["error:invaild_temp"]);
                             }
                             break;
-                        case EColunmType.Money: 
+                        case EColunmType.Money:
                             if (temp != null)
                             {
                                 temp.Money = 0;
@@ -250,11 +277,10 @@ namespace CDKPlugin.Command
                             }
                             break;
                     }
-                        break;
+                    break;
                 default:
                     throw new UserFriendlyException(m_StringLocalizer["error:invaild_opration"]);
-
-                }
+            }
         }
     }
 }
