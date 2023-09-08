@@ -68,12 +68,12 @@ namespace CDKPlugin.Command
                         var res = item.TryGiveItem(player.Player);
                         if (!res)
                         {
+                            m_repository.UpdateCDK(CDKey);
                             throw new UserFriendlyException(m_StringLocalizer["error:giveItem"]);
                         }
                         else
                         {
                             CDKey.Items.Remove(item);
-                            m_repository.UpdateCDK(CDKey);
                         }
                     }
                     if(CDKey.Vehicle != 0)
