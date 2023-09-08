@@ -44,7 +44,7 @@ namespace CDKPlugin.Until
                     random = new Random(Guid.NewGuid().GetHashCode());
                     break;
                 default:
-                    throw new ArgumentNullException(nameof(randomType), m_localization["error:invaild_random_type"]);
+                    throw new ArgumentNullException(nameof(randomType), m_localization?["error:invaild_random_type"]);
             }
            var charset = m_configuration.GetValue<string>("random:CharSet").Split(',');
            var MaxLength = m_configuration.GetValue<int>("random:Maxlength");
