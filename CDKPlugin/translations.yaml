@@ -16,6 +16,7 @@ error:
   invaild_keycode: "无效密钥码"
   invaild_priseType: "无效的奖励类型"
   invaild_charset: "无效或空的字符集,请在配置中设置字符集"
+  invaild_random_type: "无效的密钥生成器,请检查类型拼写是否正确"
 modify_cdk:
    insert: "添加了新的兑换码:{CKey}"
    update: "更新了当前选定的兑换码"

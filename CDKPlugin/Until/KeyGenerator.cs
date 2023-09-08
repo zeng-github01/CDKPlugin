@@ -24,14 +24,14 @@ namespace CDKPlugin.Until
             m_repository = serviceProvider.GetService<ICDKPluginRepository>();
             m_configuration = serviceProvider.GetService<IConfiguration>();
             m_localization = serviceProvider.GetService<IStringLocalizer>();
+
+            if (m_repository == null || m_configuration == null || m_localization == null)
+            {
+                throw new ArgumentException(nameof(serviceProvider), "The service container cannot get the service");
+            }
         }
         internal static string GenerateKey()
         {
-            if(m_repository == null || m_configuration == null || m_localization == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             var randomType = m_configuration?.GetSection("random:type")
                 .Get<ERandomType>();
             Random random = new Random();
@@ -43,6 +43,8 @@ namespace CDKPlugin.Until
                 case ERandomType.HashCode:
                     random = new Random(Guid.NewGuid().GetHashCode());
                     break;
+                default:
+                    throw new ArgumentNullException(nameof(randomType), m_localization["error:invaild_random_type"]);
             }
            var charset = m_configuration.GetValue<string>("random:CharSet").Split(',');
            var MaxLength = m_configuration.GetValue<int>("random:Maxlength");
